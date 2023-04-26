@@ -12,6 +12,7 @@
             <result property="gender" column="gender" jdbcType="TINYINT"/>
             <result property="userPassword" column="userPassword" jdbcType="VARCHAR"/>
             <result property="phone" column="phone" jdbcType="VARCHAR"/>
+           <result property="profile" column="phone" jdbcType="VARCHAR"/>
             <result property="email" column="email" jdbcType="VARCHAR"/>
             <result property="userStatus" column="userStatus" jdbcType="INTEGER"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
@@ -24,7 +25,7 @@
     <sql id="Base_Column_List">
         id,username,userAccount,
         avatarUrl,gender,userPassword,
-        phone,email,userStatus,
+        phone,email,userStatus,profile
         createTime,updateTime,isDelete,
         userRole,planetCode,tags
     </sql>

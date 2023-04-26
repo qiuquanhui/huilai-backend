@@ -1,4 +1,4 @@
-package com.quanhui.huilai.model.domain.request;
+package com.quanhui.huilai.model.request;
 
 import lombok.Data;
 

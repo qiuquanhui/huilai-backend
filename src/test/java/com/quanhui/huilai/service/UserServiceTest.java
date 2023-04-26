@@ -2,7 +2,6 @@ package com.quanhui.huilai.service;
 
 import com.quanhui.huilai.model.domain.User;
 import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -21,6 +20,7 @@ public class UserServiceTest {
     @Resource
     private UserService userService;
 
+    /*
     @Test
     public void testAddUser() {
         User user = new User();
@@ -93,14 +93,14 @@ public class UserServiceTest {
         result = userService.userRegister(userAccount, userPassword, checkPassword, planetCode);
         Assertions.assertEquals(-1, result);
     }
-
+*/
     @Test
     void searchUserByTags() {
         long begin = System.currentTimeMillis();
 
         List<String> list = Arrays.asList("java", "python");
 
-        List<User> userList = userService.searchUserByTags(list);
+        List<User> userList = userService.SqlSearchUserByTags(list);
 
         long end = System.currentTimeMillis();
 

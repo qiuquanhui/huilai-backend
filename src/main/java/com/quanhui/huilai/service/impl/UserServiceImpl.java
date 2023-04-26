@@ -26,6 +26,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.quanhui.huilai.contant.UserConstant.ADMIN_ROLE;
+import static com.quanhui.huilai.contant.UserConstant.USER_LOGIN_STATE;
+
 /**
  * 用户服务实现类
  *
@@ -152,6 +155,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safetyUser.setAvatarUrl(originUser.getAvatarUrl());
         safetyUser.setGender(originUser.getGender());
         safetyUser.setPhone(originUser.getPhone());
+        safetyUser.setProfile(originUser.getProfile());
         safetyUser.setEmail(originUser.getEmail());
         safetyUser.setPlanetCode(originUser.getPlanetCode());
         safetyUser.setUserRole(originUser.getUserRole());
@@ -175,7 +179,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     /**
      * 根据标签搜索用户
-     *  SQL查询
+     * SQL查询
+     *
      * @return list
      */
     @Override
@@ -193,10 +198,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return users.stream().map(this::getSafetyUser).collect(Collectors.toList());
 
     }
+
     /**
      * 根据标签搜索用户
-     *
+     * <p>
      * 内存查询
+     *
      * @return list
      */
     @Override
@@ -212,22 +219,107 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         //2.判断内存中是否包含要求的标签
         return userList.stream().filter(user -> {
             String tags = user.getTags();
-            if (StringUtils.isBlank(tags)){
+            if (StringUtils.isBlank(tags)) {
                 return false;
             }
             //解析json 为集合
-            Set<String> tempTagSet = gson.fromJson(tags,new TypeToken<Set<String>>(){}.getType());
+            Set<String> tempTagSet = gson.fromJson(tags, new TypeToken<Set<String>>() {
+            }.getType());
             //java8  Optional 来判断空
             tempTagSet = Optional.ofNullable(tempTagSet).orElse(new HashSet<>());
 
 
             for (String tag : tagList) {
-                if(!tempTagSet.contains(tag)){
+                if (!tempTagSet.contains(tag)) {
                     return false;
                 }
             }
             return true;
         }).map(this::getSafetyUser).collect(Collectors.toList());
+    }
+
+    /**
+     * 获取当前用户
+     *
+     * @return
+     * @Param
+     */
+    @Override
+    public User getCurrentUser(HttpServletRequest request) {
+        if (request == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = (User) request.getSession().getAttribute(USER_LOGIN_STATE);
+
+        if (user == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN);
+        }
+        return user;
+
+    }
+
+    /**
+     * 更改用户
+     *
+     * @return
+     * @Param
+     */
+    @Override
+    public int updateUser(User user, User loginUser) {
+        //1.校验参数
+        Long userId = user.getId();
+
+        if (userId <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+
+        //2.鉴权,判断用户是否为管理员，或者是自己
+        if (!isAdmin(loginUser) && userId != loginUser.getId()) {
+            throw new BusinessException(ErrorCode.NO_AUTH);
+        }
+        User oldUser = this.getById(userId);
+        if (oldUser == null) {
+            throw new BusinessException(ErrorCode.NULL_ERROR);
+        }
+        //3.更改数据
+        int result = userMapper.updateById(user);
+
+        return result;
+    }
+
+
+    /**
+     * 鉴权，是否为管理员
+     *
+     * @return
+     * @Param
+     */
+    @Override
+    public boolean isAdmin(HttpServletRequest request) {
+        if (request == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        User user = (User) request.getSession().getAttribute(USER_LOGIN_STATE);
+
+        if (user == null || user.getUserRole() != ADMIN_ROLE) {
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * 鉴权，是否为管理员
+     *
+     * @return
+     * @Param
+     */
+    @Override
+    public boolean isAdmin(User loginUser) {
+        if (loginUser == null) {
+            return false;
+        }
+        return loginUser.getUserRole() == ADMIN_ROLE;
     }
 
 }
