@@ -1,4 +1,4 @@
-package com.quanhui.huilai.model.dto;
+package com.quanhui.huilai.model.vo;
 
 import lombok.Data;
 
@@ -33,6 +33,14 @@ public class TeamUserVO implements Serializable {
      * 最大人数
      */
     private Integer maxNum;
+
+
+    /**
+     * 是否加入队伍
+     */
+    private boolean hasJson = false;
+
+
 
     /**
      * 过期时间

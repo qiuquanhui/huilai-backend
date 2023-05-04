@@ -19,10 +19,9 @@ public interface UserService extends IService<User> {
      * @param userAccount   用户账户
      * @param userPassword  用户密码
      * @param checkPassword 校验密码
-     * @param planetCode 星球编号
      * @return 新用户 id
      */
-    long userRegister(String userAccount, String userPassword, String checkPassword, String planetCode);
+    long userRegister(String userAccount, String userPassword, String checkPassword);
 
     /**
      * 用户登录
@@ -94,4 +93,14 @@ public interface UserService extends IService<User> {
      *  @return
      */
     boolean isAdmin(User loginUser);
+
+
+    /**
+     * 获取最匹配的用户
+     *
+     * @param num
+     * @param user
+     * @return
+     */
+    List<User> matchUsers(long num, User user);
 }

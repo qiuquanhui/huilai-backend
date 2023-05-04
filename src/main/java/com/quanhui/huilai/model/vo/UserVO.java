@@ -1,4 +1,4 @@
-package com.quanhui.huilai.model.dto;
+package com.quanhui.huilai.model.vo;
 
 import lombok.Data;
 

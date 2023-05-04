@@ -4,6 +4,8 @@ import com.quanhui.huilai.common.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class TeamQuery extends PageRequest {
@@ -27,6 +29,11 @@ public class TeamQuery extends PageRequest {
      * 描述
      */
     private String description;
+
+    /**
+      *  id 列表
+     */
+    private List<Long> idList;
 
     /**
      * 最大人数
